@@ -19,28 +19,28 @@ router.post(
         `Creating match request: mentorId=${mentorId}, menteeId=${menteeId}, message="${message}", userId=${userId}`
       );
 
-      // menteeId가 토큰의 사용자 ID와 일치하는지 검증
-      if (!menteeId) {
-        console.log("Validation failed: Mentee ID is required");
-        res.status(400).json({ error: "Mentee ID is required" });
-        return;
-      }
+      // menteeId 처리 - 요청 본문에 있으면 검증하고, 없으면 토큰에서 사용
+      let finalMenteeId = userId; // 기본값은 토큰에서 추출한 사용자 ID
 
-      const parsedMenteeId = parseInt(menteeId, 10);
-      if (isNaN(parsedMenteeId) || parsedMenteeId <= 0) {
-        console.log(`Validation failed: Invalid mentee ID - ${menteeId}`);
-        res.status(400).json({ error: "Valid mentee ID is required" });
-        return;
-      }
+      if (menteeId !== undefined && menteeId !== null) {
+        const parsedMenteeId = parseInt(menteeId, 10);
+        if (isNaN(parsedMenteeId) || parsedMenteeId <= 0) {
+          console.log(`Validation failed: Invalid mentee ID - ${menteeId}`);
+          res.status(400).json({ error: "Valid mentee ID is required" });
+          return;
+        }
 
-      if (parsedMenteeId !== userId) {
-        console.log(
-          `Validation failed: Mentee ID ${parsedMenteeId} does not match token user ID ${userId}`
-        );
-        res
-          .status(400)
-          .json({ error: "Mentee ID must match authenticated user" });
-        return;
+        if (parsedMenteeId !== userId) {
+          console.log(
+            `Validation failed: Mentee ID ${parsedMenteeId} does not match token user ID ${userId}`
+          );
+          res
+            .status(400)
+            .json({ error: "Mentee ID must match authenticated user" });
+          return;
+        }
+
+        finalMenteeId = parsedMenteeId;
       }
 
       // Enhanced validation for mentorId
@@ -89,7 +89,7 @@ router.post(
       // Check if request already exists - if it does and is cancelled/rejected, allow recreation
       const existingRequest = await get(
         "SELECT * FROM match_requests WHERE mentor_id = ? AND mentee_id = ?",
-        [parsedMentorId, parsedMenteeId]
+        [parsedMentorId, finalMenteeId]
       );
       if (existingRequest) {
         console.log(`Found existing request: status=${existingRequest.status}`);
@@ -121,7 +121,7 @@ router.post(
       // Check if mentee has pending request with a different mentor
       const pendingRequest = await get(
         'SELECT * FROM match_requests WHERE mentee_id = ? AND status = "pending" AND mentor_id != ?',
-        [parsedMenteeId, parsedMentorId]
+        [finalMenteeId, parsedMentorId]
       );
       if (pendingRequest) {
         console.log(
@@ -136,7 +136,7 @@ router.post(
       // Create match request
       const result = await run(
         'INSERT INTO match_requests (mentor_id, mentee_id, message, status) VALUES (?, ?, ?, "pending")',
-        [parsedMentorId, parsedMenteeId, message]
+        [parsedMentorId, finalMenteeId, message]
       );
 
       const newRequest = (await get(
