@@ -3,7 +3,7 @@ Test run for /home/runner/work/lipcoding-competition/lipcoding-competition/quest
 VSTest version 17.14.0 (x64)
 Starting test execution, please wait...
 A total of 1 test files matched the specified pattern.
-  Failed CancelMatchRequest_WithValidId_ShouldReturn200 [25 ms]
+  Failed CancelMatchRequest_WithValidId_ShouldReturn200 [26 ms]
   Error Message:
      Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK)
             .Or.EqualTo(HttpStatusCode.Created))
@@ -20,60 +20,9 @@ A total of 1 test files matched the specified pattern.
    at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
    at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
 1)    at LipCoding.BackendTests.Tests.MatchRequestTests.CancelMatchRequest_WithValidId_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/MatchRequestTests.cs:line 320
-  Failed OpenApiDocument_ShouldBeAccessible [3 ms]
-  Error Message:
-     OpenAPI document should be accessible
-Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK))
-  Expected: OK
-  But was:  NotFound
-  Stack Trace:
-     at LipCoding.BackendTests.Tests.RootRedirectionTests.OpenApiDocument_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 67
-   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
-   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
-   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
-   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
-1)    at LipCoding.BackendTests.Tests.RootRedirectionTests.OpenApiDocument_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 67
-  Failed SwaggerUi_ShouldBeAccessible [1 ms]
-  Error Message:
-     Swagger UI should be accessible
-Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK))
-  Expected: OK
-  But was:  NotFound
-  Stack Trace:
-     at LipCoding.BackendTests.Tests.RootRedirectionTests.SwaggerUi_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 44
-   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
-   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
-   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
-   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
-1)    at LipCoding.BackendTests.Tests.RootRedirectionTests.SwaggerUi_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 44
   Skipped GetProfileImage_WithInvalidId_ShouldReturn404 [< 1 ms]
   Skipped GetProfileImage_WithInvalidRole_ShouldReturn400OrNotFound [< 1 ms]
   Skipped GetProfileImage_WithoutToken_ShouldReturn401 [< 1 ms]
   Skipped GetProfileImage_WithValidRoleAndId_ShouldReturn200 [< 1 ms]
-  Failed UpdateProfile_WithMissingRequiredFields_ShouldReturn400 [4 ms]
-  Error Message:
-     Profile update with missing fields should return 400: {"name":"Test Name","role":"mentor","bio":"Test bio"}
-Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest))
-  Expected: BadRequest
-  But was:  OK
-  Stack Trace:
-     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 184
-   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
-   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
-   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
-   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
-   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
-1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 184
 Results File: /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/TestResults/test-results-backend.trx
-Failed!  - Failed:     4, Passed:    51, Skipped:     4, Total:    59, Duration: 11 s - LipCoding.BackendTests.dll (net9.0)
+Failed!  - Failed:     1, Passed:    54, Skipped:     4, Total:    59, Duration: 11 s - LipCoding.BackendTests.dll (net9.0)

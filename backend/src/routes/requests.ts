@@ -59,13 +59,13 @@ router.post(
         return;
       }
 
-      // Check if mentee has pending request
+      // Check if mentee has pending request with a different mentor
       const pendingRequest = await get(
-        'SELECT * FROM match_requests WHERE mentee_id = ? AND status = "pending"',
-        [userId]
+        'SELECT * FROM match_requests WHERE mentee_id = ? AND status = "pending" AND mentor_id != ?',
+        [userId, parsedMentorId]
       );
       if (pendingRequest) {
-        res.status(400).json({ error: "You already have a pending request" });
+        res.status(400).json({ error: "You already have a pending request with another mentor" });
         return;
       }
 
@@ -298,7 +298,7 @@ router.delete(
         [requestId]
       )) as MatchRequest;
 
-      res.json({
+      res.status(200).json({
         id: updatedRequest.id,
         mentorId: updatedRequest.mentor_id,
         menteeId: updatedRequest.mentee_id,
