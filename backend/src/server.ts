@@ -60,15 +60,15 @@ app.use("/api", requestRoutes);
 // Swagger documentation
 try {
   const swaggerDocument = YAML.load(path.join(__dirname, "../openapi.yaml"));
-  
+
   if (!swaggerDocument) {
     throw new Error("Failed to load OpenAPI document");
   }
 
   // Enhanced swagger setup for better compatibility
-  app.use("/api-docs", swaggerUi.serve);
+  app.use("/swagger-ui", swaggerUi.serve);
   app.get(
-    "/api-docs",
+    "/swagger-ui",
     swaggerUi.setup(swaggerDocument, {
       customCss: ".swagger-ui .topbar { display: none }",
       customSiteTitle: "Mentor-Mentee API",
@@ -81,11 +81,11 @@ try {
 
   // Root redirect to swagger
   app.get("/", (req, res) => {
-    res.redirect("/api-docs");
+    res.redirect("/swagger-ui");
   });
 
   // OpenAPI JSON endpoint
-  app.get("/openapi.json", (req, res) => {
+  app.get("/v3/api-docs", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.json(swaggerDocument);
   });
@@ -102,13 +102,23 @@ try {
     res.json(swaggerDocument);
   });
 
-  // Swagger UI endpoint
-  app.get("/swagger-ui", (req, res) => {
-    res.redirect("/api-docs");
+  // Legacy API docs endpoint for backward compatibility
+  app.get("/api-docs", (req, res) => {
+    res.redirect("/swagger-ui");
+  });
+
+  // OpenAPI JSON endpoint (legacy)
+  app.get("/openapi.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.json(swaggerDocument);
   });
 
   console.log("Swagger documentation loaded successfully");
-  console.log("OpenAPI document loaded with", Object.keys(swaggerDocument.paths || {}).length, "paths");
+  console.log(
+    "OpenAPI document loaded with",
+    Object.keys(swaggerDocument.paths || {}).length,
+    "paths"
+  );
 } catch (error) {
   console.error("Swagger documentation error:", error);
 
@@ -118,23 +128,29 @@ try {
       message: "Mentor-Mentee API Server",
       version: "1.0.0",
       endpoints: {
-        docs: "/api-docs",
-        openapi: "/openapi.json",
+        swagger: "/swagger-ui",
+        openapi: "/v3/api-docs",
       },
     });
   });
 
   // Fallback endpoints with proper error handling
-  app.get("/api-docs", (req, res) => {
+  app.get("/swagger-ui", (req, res) => {
     res
       .status(503)
       .json({ error: "API documentation temporarily unavailable" });
   });
 
-  app.get("/openapi.json", (req, res) => {
+  app.get("/v3/api-docs", (req, res) => {
     res
       .status(503)
       .json({ error: "OpenAPI specification temporarily unavailable" });
+  });
+
+  app.get("/api-docs", (req, res) => {
+    res
+      .status(503)
+      .json({ error: "API documentation temporarily unavailable" });
   });
 
   app.get("/swagger.json", (req, res) => {
@@ -165,7 +181,10 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(
-        `API documentation available at http://localhost:${PORT}/api-docs`
+        `Swagger UI available at http://localhost:${PORT}/swagger-ui`
+      );
+      console.log(
+        `OpenAPI docs available at http://localhost:${PORT}/v3/api-docs`
       );
     });
   }

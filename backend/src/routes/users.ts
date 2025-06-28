@@ -93,7 +93,7 @@ router.put(
         res.status(400).json({ error: "Name cannot be empty" });
         return;
       }
-      
+
       // If current user has no name and name is not provided, it's required
       if (!currentUser.name && name === undefined) {
         res.status(400).json({ error: "Name is required" });
@@ -123,8 +123,15 @@ router.put(
         // If skills is provided, validate it's not empty
         if (skills !== undefined) {
           const skillsArray = Array.isArray(skills) ? skills : [skills];
-          if (skillsArray.length === 0 || skillsArray.some((skill: string) => !skill || skill.trim().length === 0)) {
-            res.status(400).json({ error: "Skills cannot be empty for mentors" });
+          if (
+            skillsArray.length === 0 ||
+            skillsArray.some(
+              (skill: string) => !skill || skill.trim().length === 0
+            )
+          ) {
+            res
+              .status(400)
+              .json({ error: "Skills cannot be empty for mentors" });
             return;
           }
         }
@@ -232,10 +239,10 @@ router.get(
       }
 
       // Check if user exists and has the correct role
-      const user = await get(
-        "SELECT * FROM users WHERE id = ? AND role = ?",
-        [userId, role]
-      );
+      const user = await get("SELECT * FROM users WHERE id = ? AND role = ?", [
+        userId,
+        role,
+      ]);
 
       if (!user) {
         res.status(404).json({ error: "User not found" });
