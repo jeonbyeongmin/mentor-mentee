@@ -78,9 +78,25 @@ router.put(
         return;
       }
 
-      // Validate name if provided
+      // Get current user data to check what's already set
+      const currentUser = (await get("SELECT * FROM users WHERE id = ?", [
+        userId,
+      ])) as User;
+
+      if (!currentUser) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+
+      // Validate name - if provided, it cannot be empty; if current name is empty, name is required
       if (name !== undefined && (!name || name.trim().length === 0)) {
         res.status(400).json({ error: "Name cannot be empty" });
+        return;
+      }
+      
+      // If current user has no name and name is not provided, it's required
+      if (!currentUser.name && name === undefined) {
+        res.status(400).json({ error: "Name is required" });
         return;
       }
 
@@ -94,6 +110,24 @@ router.put(
       if (bio !== undefined && bio.includes("\x00")) {
         res.status(400).json({ error: "Bio contains invalid characters" });
         return;
+      }
+
+      // For mentors, validate skills
+      if (req.user!.role === "mentor") {
+        // If current user has no tech_stacks and skills is not provided, skills are required
+        if (!currentUser.tech_stacks && skills === undefined) {
+          res.status(400).json({ error: "Skills are required for mentors" });
+          return;
+        }
+
+        // If skills is provided, validate it's not empty
+        if (skills !== undefined) {
+          const skillsArray = Array.isArray(skills) ? skills : [skills];
+          if (skillsArray.length === 0 || skillsArray.some((skill: string) => !skill || skill.trim().length === 0)) {
+            res.status(400).json({ error: "Skills cannot be empty for mentors" });
+            return;
+          }
+        }
       }
 
       let profileImageUrl = null;
@@ -177,16 +211,44 @@ router.get(
   authenticateToken,
   async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const { role, id } = req.params;
+
+      // Validate role parameter
+      if (role !== "mentor" && role !== "mentee") {
+        res.status(400).json({ error: "Invalid role parameter" });
+        return;
+      }
+
+      // Validate id parameter
+      if (!id) {
+        res.status(400).json({ error: "User ID is required" });
+        return;
+      }
+
+      const userId = parseInt(id, 10);
+      if (isNaN(userId) || userId <= 0) {
+        res.status(400).json({ error: "Invalid user ID" });
+        return;
+      }
+
+      // Check if user exists and has the correct role
+      const user = await get(
+        "SELECT * FROM users WHERE id = ? AND role = ?",
+        [userId, role]
+      );
+
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
 
       const image = await get(
         "SELECT * FROM profile_images WHERE user_id = ?",
-        [id]
+        [userId]
       );
 
       if (!image) {
         // Redirect to default image
-        const role = req.params.role;
         const defaultUrl =
           role === "mentor"
             ? "https://placehold.co/500x500.jpg?text=MENTOR"
@@ -197,6 +259,7 @@ router.get(
       res.set({
         "Content-Type": image.mime_type,
         "Content-Length": image.size,
+        "Cache-Control": "public, max-age=3600", // Cache for 1 hour
       });
       res.send(image.data);
     } catch (error) {

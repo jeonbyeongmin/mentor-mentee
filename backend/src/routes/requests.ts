@@ -27,6 +27,12 @@ router.post(
         return;
       }
 
+      // Validate message is required
+      if (!message || message.trim().length === 0) {
+        res.status(400).json({ error: "Message is required" });
+        return;
+      }
+
       // Validate message length if provided
       if (message && message.length > 500) {
         res.status(400).json({ error: "Message cannot exceed 500 characters" });
@@ -66,7 +72,7 @@ router.post(
       // Create match request
       const result = await run(
         'INSERT INTO match_requests (mentor_id, mentee_id, message, status) VALUES (?, ?, ?, "pending")',
-        [parsedMentorId, userId, message || null]
+        [parsedMentorId, userId, message]
       );
 
       const newRequest = (await get(

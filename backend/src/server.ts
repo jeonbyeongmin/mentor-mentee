@@ -60,6 +60,10 @@ app.use("/api", requestRoutes);
 // Swagger documentation
 try {
   const swaggerDocument = YAML.load(path.join(__dirname, "../openapi.yaml"));
+  
+  if (!swaggerDocument) {
+    throw new Error("Failed to load OpenAPI document");
+  }
 
   // Enhanced swagger setup for better compatibility
   app.use("/api-docs", swaggerUi.serve);
@@ -68,6 +72,10 @@ try {
     swaggerUi.setup(swaggerDocument, {
       customCss: ".swagger-ui .topbar { display: none }",
       customSiteTitle: "Mentor-Mentee API",
+      swaggerOptions: {
+        persistAuthorization: true,
+        tryItOutEnabled: true,
+      },
     })
   );
 
@@ -94,7 +102,13 @@ try {
     res.json(swaggerDocument);
   });
 
+  // Swagger UI endpoint
+  app.get("/swagger-ui", (req, res) => {
+    res.redirect("/api-docs");
+  });
+
   console.log("Swagger documentation loaded successfully");
+  console.log("OpenAPI document loaded with", Object.keys(swaggerDocument.paths || {}).length, "paths");
 } catch (error) {
   console.error("Swagger documentation error:", error);
 
