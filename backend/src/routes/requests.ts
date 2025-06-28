@@ -15,15 +15,28 @@ router.post(
       const { mentorId, message } = req.body;
       const userId = req.user!.id; // menteeId는 토큰에서 추출
 
+      // Enhanced validation for mentorId
       if (!mentorId) {
         res.status(400).json({ error: "Mentor ID is required" });
+        return;
+      }
+
+      const parsedMentorId = parseInt(mentorId, 10);
+      if (isNaN(parsedMentorId) || parsedMentorId <= 0) {
+        res.status(400).json({ error: "Valid mentor ID is required" });
+        return;
+      }
+
+      // Validate message length if provided
+      if (message && message.length > 500) {
+        res.status(400).json({ error: "Message cannot exceed 500 characters" });
         return;
       }
 
       // Check if mentor exists and is actually a mentor
       const mentor = await get(
         'SELECT * FROM users WHERE id = ? AND role = "mentor"',
-        [mentorId]
+        [parsedMentorId]
       );
       if (!mentor) {
         res.status(400).json({ error: "Mentor not found" });
@@ -33,7 +46,7 @@ router.post(
       // Check if request already exists
       const existingRequest = await get(
         "SELECT * FROM match_requests WHERE mentor_id = ? AND mentee_id = ?",
-        [mentorId, userId]
+        [parsedMentorId, userId]
       );
       if (existingRequest) {
         res.status(400).json({ error: "Request already exists" });
@@ -53,7 +66,7 @@ router.post(
       // Create match request
       const result = await run(
         'INSERT INTO match_requests (mentor_id, mentee_id, message, status) VALUES (?, ?, ?, "pending")',
-        [mentorId, userId, message || null]
+        [parsedMentorId, userId, message || null]
       );
 
       const newRequest = (await get(
@@ -61,7 +74,7 @@ router.post(
         [result.lastID]
       )) as MatchRequest;
 
-      res.json({
+      res.status(201).json({
         id: newRequest.id,
         mentorId: newRequest.mentor_id,
         menteeId: newRequest.mentee_id,

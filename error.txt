@@ -1,0 +1,249 @@
+~/work/lipcoding-competition/lipcoding-competition/quest-checker ~/work/lipcoding-competition/lipcoding-competition
+Test run for /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/bin/Debug/net9.0/LipCoding.BackendTests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.14.0 (x64)
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  Failed Login_WithMissingFields_ShouldReturn401 [25 ms]
+  Error Message:
+     Login with missing fields should return 401: {"password":"TestPassword123!"}
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized))
+  Expected: Unauthorized
+  But was:  BadRequest
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.AuthenticationTests.Login_WithMissingFields_ShouldReturn401() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 166
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeAndAfterTestCommand.<>c__DisplayClass1_0.<Execute>b__0()
+   at NUnit.Framework.Internal.Commands.DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext context, Action action)
+1)    at LipCoding.BackendTests.Tests.AuthenticationTests.Login_WithMissingFields_ShouldReturn401() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 166
+  Failed Signup_WithInvalidEmail_ShouldReturn400 [323 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest))
+  Expected: BadRequest
+  But was:  Created
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.AuthenticationTests.Signup_WithInvalidEmail_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 70
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeAndAfterTestCommand.<>c__DisplayClass1_0.<Execute>b__0()
+   at NUnit.Framework.Internal.Commands.DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext context, Action action)
+1)    at LipCoding.BackendTests.Tests.AuthenticationTests.Signup_WithInvalidEmail_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 70
+  Failed Signup_WithMissingRequiredFields_ShouldReturn400 [326 ms]
+  Error Message:
+     Signup with missing fields should return 400: {"email":"test@example.com","password":"TestPassword123!","role":"mentor"}
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest))
+  Expected: BadRequest
+  But was:  Created
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.AuthenticationTests.Signup_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 87
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeAndAfterTestCommand.<>c__DisplayClass1_0.<Execute>b__0()
+   at NUnit.Framework.Internal.Commands.DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext context, Action action)
+1)    at LipCoding.BackendTests.Tests.AuthenticationTests.Signup_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/AuthenticationTests.cs:line 87
+  Failed CancelMatchRequest_WithValidId_ShouldReturn200 [5 ms]
+  Error Message:
+     Assert.That(createResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK)
+            .Or.EqualTo(HttpStatusCode.Created))
+  Expected: OK or Created
+  But was:  BadRequest
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.MatchRequestTests.CancelMatchRequest_WithValidId_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/MatchRequestTests.cs:line 320
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.MatchRequestTests.CancelMatchRequest_WithValidId_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/MatchRequestTests.cs:line 320
+  Failed OpenApiDocument_ShouldBeAccessible [2 ms]
+  Error Message:
+     OpenAPI document should be accessible
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK))
+  Expected: OK
+  But was:  NotFound
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.RootRedirectionTests.OpenApiDocument_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 67
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.RootRedirectionTests.OpenApiDocument_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 67
+  Failed SwaggerUi_ShouldBeAccessible [1 ms]
+  Error Message:
+     Swagger UI should be accessible
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK))
+  Expected: OK
+  But was:  NotFound
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.RootRedirectionTests.SwaggerUi_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 44
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.RootRedirectionTests.SwaggerUi_ShouldBeAccessible() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/RootRedirectionTests.cs:line 44
+  Failed GetMe_WithValidToken_ShouldReturn200AndUserData [2 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK))
+  Expected: OK
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.GetMe_WithValidToken_ShouldReturn200AndUserData() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 44
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.GetMe_WithValidToken_ShouldReturn200AndUserData() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 44
+  Skipped GetProfileImage_WithInvalidId_ShouldReturn404 [< 1 ms]
+  Skipped GetProfileImage_WithInvalidRole_ShouldReturn400OrNotFound [< 1 ms]
+  Skipped GetProfileImage_WithoutToken_ShouldReturn401 [< 1 ms]
+  Skipped GetProfileImage_WithValidRoleAndId_ShouldReturn200 [< 1 ms]
+  Failed UpdateProfile_WithExtremelyLongBio_ShouldHandleAppropriately [4 ms]
+  Error Message:
+     Extremely long bio should be handled gracefully
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK)
+            .Or.EqualTo(HttpStatusCode.NoContent)
+            .Or.EqualTo(HttpStatusCode.BadRequest))
+  Expected: OK or NoContent or BadRequest
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithExtremelyLongBio_ShouldHandleAppropriately() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 276
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithExtremelyLongBio_ShouldHandleAppropriately() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 276
+  Failed UpdateProfile_WithInvalidRole_ShouldReturn400 [2 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest))
+  Expected: BadRequest
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithInvalidRole_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 205
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithInvalidRole_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 205
+  Failed UpdateProfile_WithMenteeData_ShouldReturn200 [1 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK)
+            .Or.EqualTo(HttpStatusCode.NoContent))
+  Expected: OK or NoContent
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMenteeData_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 125
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMenteeData_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 125
+  Failed UpdateProfile_WithMissingRequiredFields_ShouldReturn400 [8 ms]
+  Error Message:
+     Profile update with missing fields should return 400: {"name":"Test Name","role":"mentor","bio":"Test bio"}
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest))
+  Expected: BadRequest
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 184
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithMissingRequiredFields_ShouldReturn400() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 184
+  Failed UpdateProfile_WithoutToken_ShouldReturn401 [2 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized))
+  Expected: Unauthorized
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithoutToken_ShouldReturn401() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 145
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithoutToken_ShouldReturn401() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 145
+  Failed UpdateProfile_WithSpecialCharacters_ShouldHandleCorrectly [2 ms]
+  Error Message:
+     Profile with special characters should be handled appropriately
+Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK)
+            .Or.EqualTo(HttpStatusCode.NoContent)
+            .Or.EqualTo(HttpStatusCode.BadRequest))
+  Expected: OK or NoContent or BadRequest
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithSpecialCharacters_ShouldHandleCorrectly() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 299
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithSpecialCharacters_ShouldHandleCorrectly() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 299
+  Failed UpdateProfile_WithValidData_ShouldReturn200 [2 ms]
+  Error Message:
+     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK)
+            .Or.EqualTo(HttpStatusCode.NoContent))
+  Expected: OK or NoContent
+  But was:  TooManyRequests
+  Stack Trace:
+     at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithValidData_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 93
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(TestExecutionContext context, Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.SimpleWorkItem.<>c__DisplayClass3_0.<PerformWork>b__0()
+   at NUnit.Framework.Internal.ContextUtils.<>c__DisplayClass1_0`1.<DoIsolated>b__0(Object _)
+1)    at LipCoding.BackendTests.Tests.UserTests.UpdateProfile_WithValidData_ShouldReturn200() in /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/Tests/UserTests.cs:line 93
+Results File: /home/runner/work/lipcoding-competition/lipcoding-competition/quest-checker/LipCoding.BackendTests/TestResults/test-results-backend.trx
+Failed!  - Failed:    14, Passed:    41, Skipped:     4, Total:    59, Duration: 12 s - LipCoding.BackendTests.dll (net9.0)

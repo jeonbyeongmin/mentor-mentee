@@ -13,12 +13,22 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, name, role } = req.body;
 
-    // Validation
-    if (!email || !password || !role) {
-      res.status(400).json({ error: "Email, password, and role are required" });
+    // Basic field validation
+    if (!email || !password || !name || !role) {
+      res
+        .status(400)
+        .json({ error: "Email, password, name, and role are required" });
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ error: "Invalid email format" });
+      return;
+    }
+
+    // Role validation
     if (role !== "mentor" && role !== "mentee") {
       res.status(400).json({ error: "Role must be either mentor or mentee" });
       return;
@@ -39,7 +49,7 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
     // Create user
     const result = await run(
       "INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)",
-      [email, hashedPassword, name || null, role]
+      [email, hashedPassword, name, role]
     );
 
     res.status(201).json({ message: "User created successfully" });
@@ -55,7 +65,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(400).json({ error: "Email and password are required" });
+      res.status(401).json({ error: "Email and password are required" });
       return;
     }
 

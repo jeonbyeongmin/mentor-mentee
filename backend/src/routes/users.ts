@@ -67,10 +67,34 @@ router.put(
   "/profile",
   authenticateToken,
   upload.single("image"),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
-      const { name, bio, skills } = req.body;
+      const { name, bio, skills, role } = req.body;
       const userId = req.user!.id;
+
+      // Validate role if provided (should not be different from existing)
+      if (role && role !== req.user!.role) {
+        res.status(400).json({ error: "Role cannot be changed" });
+        return;
+      }
+
+      // Validate name if provided
+      if (name !== undefined && (!name || name.trim().length === 0)) {
+        res.status(400).json({ error: "Name cannot be empty" });
+        return;
+      }
+
+      // Validate bio length
+      if (bio !== undefined && bio.length > 1000) {
+        res.status(400).json({ error: "Bio cannot exceed 1000 characters" });
+        return;
+      }
+
+      // Special character validation for bio
+      if (bio !== undefined && bio.includes("\x00")) {
+        res.status(400).json({ error: "Bio contains invalid characters" });
+        return;
+      }
 
       let profileImageUrl = null;
 
