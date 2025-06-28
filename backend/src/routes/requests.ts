@@ -15,26 +15,36 @@ router.post(
       const { mentorId, message } = req.body;
       const userId = req.user!.id; // menteeId는 토큰에서 추출
 
+      console.log(
+        `Creating match request: mentorId=${mentorId}, message="${message}", userId=${userId}`
+      );
+
       // Enhanced validation for mentorId
       if (!mentorId) {
+        console.log("Validation failed: Mentor ID is required");
         res.status(400).json({ error: "Mentor ID is required" });
         return;
       }
 
       const parsedMentorId = parseInt(mentorId, 10);
       if (isNaN(parsedMentorId) || parsedMentorId <= 0) {
+        console.log(`Validation failed: Invalid mentor ID - ${mentorId}`);
         res.status(400).json({ error: "Valid mentor ID is required" });
         return;
       }
 
-      // Validate message is required
-      if (!message || message.trim().length === 0) {
+      // Validate message - allow empty message but not null/undefined
+      if (message === null || message === undefined) {
+        console.log("Validation failed: Message is required");
         res.status(400).json({ error: "Message is required" });
         return;
       }
 
       // Validate message length if provided
       if (message && message.length > 500) {
+        console.log(
+          `Validation failed: Message too long - ${message.length} characters`
+        );
         res.status(400).json({ error: "Message cannot exceed 500 characters" });
         return;
       }
@@ -45,18 +55,43 @@ router.post(
         [parsedMentorId]
       );
       if (!mentor) {
+        console.log(
+          `Validation failed: Mentor not found - ID ${parsedMentorId}`
+        );
         res.status(400).json({ error: "Mentor not found" });
         return;
       }
 
-      // Check if request already exists
+      // Check if request already exists - if it does and is cancelled/rejected, allow recreation
       const existingRequest = await get(
         "SELECT * FROM match_requests WHERE mentor_id = ? AND mentee_id = ?",
         [parsedMentorId, userId]
       );
       if (existingRequest) {
-        res.status(400).json({ error: "Request already exists" });
-        return;
+        console.log(`Found existing request: status=${existingRequest.status}`);
+        // If request exists and is pending or accepted, don't allow duplicate
+        if (
+          existingRequest.status === "pending" ||
+          existingRequest.status === "accepted"
+        ) {
+          console.log(
+            "Validation failed: Request already exists with pending/accepted status"
+          );
+          res.status(400).json({ error: "Request already exists" });
+          return;
+        }
+        // If request was cancelled or rejected, delete the old one to allow new request
+        if (
+          existingRequest.status === "cancelled" ||
+          existingRequest.status === "rejected"
+        ) {
+          console.log(
+            `Deleting old ${existingRequest.status} request to allow new one`
+          );
+          await run("DELETE FROM match_requests WHERE id = ?", [
+            existingRequest.id,
+          ]);
+        }
       }
 
       // Check if mentee has pending request with a different mentor
@@ -65,7 +100,14 @@ router.post(
         [userId, parsedMentorId]
       );
       if (pendingRequest) {
-        res.status(400).json({ error: "You already have a pending request with another mentor" });
+        console.log(
+          `Validation failed: User has pending request with mentor ${pendingRequest.mentor_id}`
+        );
+        res
+          .status(400)
+          .json({
+            error: "You already have a pending request with another mentor",
+          });
         return;
       }
 
@@ -79,6 +121,8 @@ router.post(
         "SELECT * FROM match_requests WHERE id = ?",
         [result.lastID]
       )) as MatchRequest;
+
+      console.log(`Successfully created match request: ID=${newRequest.id}`);
 
       res.status(201).json({
         id: newRequest.id,
