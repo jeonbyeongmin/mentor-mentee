@@ -218,7 +218,7 @@ paths:
           schema:
             type: string
           description: Filter mentors by skill set (only one skill at a time)
-        - name: order_by
+        - name: orderBy
           in: query
           required: false
           schema:
