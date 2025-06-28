@@ -63,6 +63,7 @@ export default function Login() {
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
                 required
                 className="input mt-1"
@@ -81,6 +82,7 @@ export default function Login() {
               </label>
               <input
                 id="password"
+                name="password"
                 type="password"
                 required
                 className="input mt-1"

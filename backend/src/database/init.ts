@@ -5,9 +5,18 @@ import path from "path";
 const dbPath = path.join(__dirname, "../database.sqlite");
 const db = new sqlite3.Database(dbPath);
 
-const run = promisify(db.run.bind(db));
-const get = promisify(db.get.bind(db));
-const all = promisify(db.all.bind(db));
+const run = promisify(db.run.bind(db)) as (
+  sql: string,
+  params?: any[]
+) => Promise<any>;
+const get = promisify(db.get.bind(db)) as (
+  sql: string,
+  params?: any[]
+) => Promise<any>;
+const all = promisify(db.all.bind(db)) as (
+  sql: string,
+  params?: any[]
+) => Promise<any[]>;
 
 export { db, run, get, all };
 

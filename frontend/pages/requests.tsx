@@ -142,7 +142,7 @@ export default function Requests() {
                             <div className="mt-2">
                               <p
                                 className="request-message text-gray-700"
-                                mentee={request.menteeId.toString()}
+                                data-mentee={request.menteeId.toString()}
                               >
                                 "{request.message}"
                               </p>

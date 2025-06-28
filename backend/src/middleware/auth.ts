@@ -16,12 +16,13 @@ export function authenticateToken(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): void {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).json({ error: "Access token required" });
+    res.status(401).json({ error: "Access token required" });
+    return;
   }
 
   try {
@@ -29,18 +30,21 @@ export function authenticateToken(
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
+    res.status(401).json({ error: "Invalid token" });
+    return;
   }
 }
 
 export function requireRole(role: "mentor" | "mentee") {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      return res.status(401).json({ error: "Authentication required" });
+      res.status(401).json({ error: "Authentication required" });
+      return;
     }
 
     if (req.user.role !== role) {
-      return res.status(403).json({ error: `${role} role required` });
+      res.status(403).json({ error: `${role} role required` });
+      return;
     }
 
     next();

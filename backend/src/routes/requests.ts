@@ -10,13 +10,14 @@ router.post(
   "/match-requests",
   authenticateToken,
   requireRole("mentee"),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
       const { mentorId, menteeId, message } = req.body;
       const userId = req.user!.id;
 
       if (!mentorId) {
-        return res.status(400).json({ error: "Mentor ID is required" });
+        res.status(400).json({ error: "Mentor ID is required" });
+        return;
       }
 
       // Check if mentor exists and is actually a mentor
@@ -25,7 +26,8 @@ router.post(
         [mentorId]
       );
       if (!mentor) {
-        return res.status(400).json({ error: "Mentor not found" });
+        res.status(400).json({ error: "Mentor not found" });
+        return;
       }
 
       // Check if request already exists
@@ -34,7 +36,8 @@ router.post(
         [mentorId, userId]
       );
       if (existingRequest) {
-        return res.status(400).json({ error: "Request already exists" });
+        res.status(400).json({ error: "Request already exists" });
+        return;
       }
 
       // Check if mentee has pending request
@@ -43,9 +46,8 @@ router.post(
         [userId]
       );
       if (pendingRequest) {
-        return res
-          .status(400)
-          .json({ error: "You already have a pending request" });
+        res.status(400).json({ error: "You already have a pending request" });
+        return;
       }
 
       // Create match request
@@ -137,10 +139,15 @@ router.put(
   "/match-requests/:id/accept",
   authenticateToken,
   requireRole("mentor"),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
       const requestId = req.params.id;
       const userId = req.user!.id;
+
+      if (!requestId) {
+        res.status(400).json({ error: "Request ID is required" });
+        return;
+      }
 
       // Get the request
       const request = (await get(
@@ -149,7 +156,8 @@ router.put(
       )) as MatchRequest;
 
       if (!request) {
-        return res.status(404).json({ error: "Request not found" });
+        res.status(404).json({ error: "Request not found" });
+        return;
       }
 
       // Check if mentor already has accepted request
@@ -158,9 +166,8 @@ router.put(
         [userId]
       );
       if (acceptedRequest && acceptedRequest.id !== parseInt(requestId)) {
-        return res
-          .status(400)
-          .json({ error: "You already have an accepted request" });
+        res.status(400).json({ error: "You already have an accepted request" });
+        return;
       }
 
       // Accept the request
@@ -199,7 +206,7 @@ router.put(
   "/match-requests/:id/reject",
   authenticateToken,
   requireRole("mentor"),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
       const requestId = req.params.id;
       const userId = req.user!.id;
@@ -211,7 +218,8 @@ router.put(
       )) as MatchRequest;
 
       if (!request) {
-        return res.status(404).json({ error: "Request not found" });
+        res.status(404).json({ error: "Request not found" });
+        return;
       }
 
       // Reject the request
@@ -244,7 +252,7 @@ router.delete(
   "/match-requests/:id",
   authenticateToken,
   requireRole("mentee"),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
       const requestId = req.params.id;
       const userId = req.user!.id;
@@ -256,7 +264,8 @@ router.delete(
       )) as MatchRequest;
 
       if (!request) {
-        return res.status(404).json({ error: "Request not found" });
+        res.status(404).json({ error: "Request not found" });
+        return;
       }
 
       // Cancel the request

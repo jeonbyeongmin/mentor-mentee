@@ -22,40 +22,45 @@ const upload = multer({
 });
 
 // Get my profile
-router.get("/me", authenticateToken, async (req: Request, res: Response) => {
-  try {
-    const user = (await get("SELECT * FROM users WHERE id = ?", [
-      req.user!.id,
-    ])) as User;
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+router.get(
+  "/me",
+  authenticateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const user = (await get("SELECT * FROM users WHERE id = ?", [
+        req.user!.id,
+      ])) as User;
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+
+      const profile: any = {
+        name: user.name,
+        bio: user.bio,
+        imageUrl:
+          user.profile_image ||
+          (user.role === "mentor"
+            ? "https://placehold.co/500x500.jpg?text=MENTOR"
+            : "https://placehold.co/500x500.jpg?text=MENTEE"),
+      };
+
+      if (user.role === "mentor" && user.tech_stacks) {
+        profile.skills = JSON.parse(user.tech_stacks);
+      }
+
+      res.json({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        profile,
+      });
+    } catch (error) {
+      console.error("Get profile error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    const profile: any = {
-      name: user.name,
-      bio: user.bio,
-      imageUrl:
-        user.profile_image ||
-        (user.role === "mentor"
-          ? "https://placehold.co/500x500.jpg?text=MENTOR"
-          : "https://placehold.co/500x500.jpg?text=MENTEE"),
-    };
-
-    if (user.role === "mentor" && user.tech_stacks) {
-      profile.skills = JSON.parse(user.tech_stacks);
-    }
-
-    res.json({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      profile,
-    });
-  } catch (error) {
-    console.error("Get profile error:", error);
-    res.status(500).json({ error: "Internal server error" });
   }
-});
+);
 
 // Update profile
 router.put(

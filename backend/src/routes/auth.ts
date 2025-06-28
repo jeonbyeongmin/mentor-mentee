@@ -9,21 +9,19 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 // Signup
-router.post("/signup", async (req: Request, res: Response) => {
+router.post("/signup", async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, name, role } = req.body;
 
     // Validation
     if (!email || !password || !role) {
-      return res
-        .status(400)
-        .json({ error: "Email, password, and role are required" });
+      res.status(400).json({ error: "Email, password, and role are required" });
+      return;
     }
 
     if (role !== "mentor" && role !== "mentee") {
-      return res
-        .status(400)
-        .json({ error: "Role must be either mentor or mentee" });
+      res.status(400).json({ error: "Role must be either mentor or mentee" });
+      return;
     }
 
     // Check if user already exists
@@ -31,7 +29,8 @@ router.post("/signup", async (req: Request, res: Response) => {
       email,
     ]);
     if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
+      res.status(400).json({ error: "User already exists" });
+      return;
     }
 
     // Hash password
@@ -51,12 +50,13 @@ router.post("/signup", async (req: Request, res: Response) => {
 });
 
 // Login
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
+      res.status(400).json({ error: "Email and password are required" });
+      return;
     }
 
     // Find user
@@ -64,13 +64,15 @@ router.post("/login", async (req: Request, res: Response) => {
       email,
     ])) as User;
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
     }
 
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
     }
 
     // Generate JWT token
