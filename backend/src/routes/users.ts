@@ -6,13 +6,13 @@ import { User } from "../types";
 
 const router = express.Router();
 
-// Configure multer for image uploads
+// Configure multer for image uploads (for potential future use)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 1024 * 1024, // 1MB
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: any, file: any, cb: any) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
       cb(null, true);
     } else {
@@ -66,28 +66,53 @@ router.get(
 router.put(
   "/profile",
   authenticateToken,
-  upload.single("image"),
   async (req: Request, res: Response) => {
     try {
-      const { name, bio, skills } = req.body;
+      const { id, name, role, bio, image, skills } = req.body;
       const userId = req.user!.id;
+
+      // Validate that the request is for the authenticated user
+      if (id && id !== userId) {
+        res.status(400).json({ error: "Cannot update profile for different user" });
+        return;
+      }
+
+      // Validate role matches authenticated user's role
+      if (role && role !== req.user!.role) {
+        res.status(400).json({ error: "Cannot change user role" });
+        return;
+      }
 
       let profileImageUrl = null;
 
-      // Handle image upload
-      if (req.file) {
-        // Store image in database
-        await run(
-          "INSERT OR REPLACE INTO profile_images (user_id, filename, mime_type, size, data) VALUES (?, ?, ?, ?, ?)",
-          [
-            userId,
-            req.file.originalname,
-            req.file.mimetype,
-            req.file.size,
-            req.file.buffer,
-          ]
-        );
-        profileImageUrl = `/images/${req.user!.role}/${userId}`;
+      // Handle base64 image
+      if (image) {
+        try {
+          // Remove data URL prefix if present (data:image/jpeg;base64,)
+          const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, '');
+          const imageBuffer = Buffer.from(base64Data, 'base64');
+          
+          // Determine MIME type from original data URL or default to JPEG
+          const mimeType = image.match(/^data:image\/([a-z]+);base64,/) 
+            ? `image/${image.match(/^data:image\/([a-z]+);base64,/)[1]}`
+            : 'image/jpeg';
+
+          // Store image in database
+          await run(
+            "INSERT OR REPLACE INTO profile_images (user_id, filename, mime_type, size, data) VALUES (?, ?, ?, ?, ?)",
+            [
+              userId,
+              `profile_${userId}.${mimeType.split('/')[1]}`,
+              mimeType,
+              imageBuffer.length,
+              imageBuffer,
+            ]
+          );
+          profileImageUrl = `/images/${req.user!.role}/${userId}`;
+        } catch (error) {
+          res.status(400).json({ error: "Invalid base64 image data" });
+          return;
+        }
       }
 
       // Prepare update data

@@ -1,183 +1,170 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
-  title: 멘토-멘티 매칭 앱 API
+  title: Mentor-Mentee Matching API
+  description: API for matching mentors and mentees in a mentoring platform
   version: 1.0.0
-  description: 멘토와 멘티를 매칭하는 앱의 API 명세
+  contact:
+    name: Mentor-Mentee Matching App
+  license:
+    name: MIT
+
 servers:
   - url: http://localhost:8080/api
-    description: Development server
-
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        role:
-          type: string
-          enum: [mentor, mentee]
-        profile:
-          type: object
-          properties:
-            name:
-              type: string
-            bio:
-              type: string
-            imageUrl:
-              type: string
-            skills:
-              type: array
-              items:
-                type: string
-
-    MatchRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-        mentorId:
-          type: integer
-        menteeId:
-          type: integer
-        message:
-          type: string
-        status:
-          type: string
-          enum: [pending, accepted, rejected, cancelled]
+    description: Local development server
 
 security:
-  - bearerAuth: []
+  - BearerAuth: []
 
 paths:
   /signup:
     post:
-      summary: 회원가입
+      operationId: signup
+      tags:
+        - Authentication
+      summary: User registration
+      description: Register a new user as either a mentor or mentee
       security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-                - role
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-                name:
-                  type: string
-                role:
-                  type: string
-                  enum: [mentor, mentee]
+              $ref: "#/components/schemas/SignupRequest"
       responses:
         "201":
-          description: 회원가입 성공
+          description: User successfully created
         "400":
-          description: 잘못된 요청
+          description: Bad request - invalid payload format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /login:
     post:
-      summary: 로그인
+      operationId: login
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return JWT token
       security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
+              $ref: "#/components/schemas/LoginRequest"
       responses:
         "200":
-          description: 로그인 성공
+          description: Login successful
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
+                $ref: "#/components/schemas/LoginResponse"
         "400":
-          description: 잘못된 요청
+          description: Bad request - invalid payload format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - login failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /me:
     get:
-      summary: 내 정보 조회
+      operationId: getCurrentUser
+      tags:
+        - User Profile
+      summary: Get current user information
+      description: Retrieve the profile information of the currently authenticated user
       responses:
         "200":
-          description: 사용자 정보
+          description: User information retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                oneOf:
+                  - $ref: "#/components/schemas/MentorProfile"
+                  - $ref: "#/components/schemas/MenteeProfile"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /profile:
     put:
-      summary: 프로필 수정
+      operationId: updateProfile
+      tags:
+        - User Profile
+      summary: Update user profile
+      description: Update the profile information of the currently authenticated user
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                bio:
-                  type: string
-                skills:
-                  type: array
-                  items:
-                    type: string
-                image:
-                  type: string
-                  format: binary
+              oneOf:
+                - $ref: "#/components/schemas/UpdateMentorProfileRequest"
+                - $ref: "#/components/schemas/UpdateMenteeProfileRequest"
       responses:
         "200":
-          description: 프로필 수정 성공
+          description: Profile updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                oneOf:
+                  - $ref: "#/components/schemas/MentorProfile"
+                  - $ref: "#/components/schemas/MenteeProfile"
         "400":
-          description: 잘못된 요청
+          description: Bad request - invalid payload format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /images/{role}/{id}:
     get:
-      summary: 프로필 이미지
+      operationId: getProfileImage
+      tags:
+        - User Profile
+      summary: Get profile image
+      description: Retrieve the profile image for a specific user
       parameters:
         - name: role
           in: path
@@ -185,14 +172,16 @@ paths:
           schema:
             type: string
             enum: [mentor, mentee]
+          description: User role (mentor or mentee)
         - name: id
           in: path
           required: true
           schema:
             type: integer
+          description: User ID
       responses:
         "200":
-          description: 프로필 이미지
+          description: Profile image retrieved successfully
           content:
             image/jpeg:
               schema:
@@ -203,76 +192,110 @@ paths:
                 type: string
                 format: binary
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /mentors:
     get:
-      summary: 멘토 목록 조회 (멘티 전용)
+      operationId: getMentors
+      tags:
+        - Mentors
+      summary: Get list of mentors (mentee only)
+      description: Retrieve a list of all mentors, with optional filtering and sorting
       parameters:
         - name: skill
           in: query
+          required: false
           schema:
             type: string
+          description: Filter mentors by skill set (only one skill at a time)
         - name: order_by
           in: query
+          required: false
           schema:
             type: string
             enum: [skill, name]
+          description: Sort mentors by skill or name (ascending order)
       responses:
         "200":
-          description: 멘토 목록
+          description: Mentor list retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/components/schemas/MentorListItem"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests:
     post:
-      summary: 매칭 요청 보내기 (멘티 전용)
+      operationId: createMatchRequest
+      tags:
+        - Match Requests
+      summary: Send match request (mentee only)
+      description: Send a matching request to a mentor
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - mentorId
-                - menteeId
-              properties:
-                mentorId:
-                  type: integer
-                menteeId:
-                  type: integer
-                message:
-                  type: string
+              $ref: "#/components/schemas/MatchRequestCreate"
       responses:
         "200":
-          description: 요청 전송 성공
+          description: Match request sent successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchRequest"
         "400":
-          description: 잘못된 요청
+          description: Bad request - invalid payload or mentor not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests/incoming:
     get:
-      summary: 받은 요청 목록 (멘토 전용)
+      operationId: getIncomingMatchRequests
+      tags:
+        - Match Requests
+      summary: Get incoming match requests (mentor only)
+      description: Retrieve all match requests received by the mentor
       responses:
         "200":
-          description: 받은 요청 목록
+          description: Incoming match requests retrieved successfully
           content:
             application/json:
               schema:
@@ -280,92 +303,472 @@ paths:
                 items:
                   $ref: "#/components/schemas/MatchRequest"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests/outgoing:
     get:
-      summary: 보낸 요청 목록 (멘티 전용)
+      operationId: getOutgoingMatchRequests
+      tags:
+        - Match Requests
+      summary: Get outgoing match requests (mentee only)
+      description: Retrieve all match requests sent by the mentee
       responses:
         "200":
-          description: 보낸 요청 목록
+          description: Outgoing match requests retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MatchRequest"
+                  $ref: "#/components/schemas/MatchRequestOutgoing"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests/{id}/accept:
     put:
-      summary: 요청 수락 (멘토 전용)
+      operationId: acceptMatchRequest
+      tags:
+        - Match Requests
+      summary: Accept match request (mentor only)
+      description: Accept a specific match request
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: integer
+          description: Match request ID
       responses:
         "200":
-          description: 요청 수락 성공
+          description: Match request accepted successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchRequest"
         "404":
-          description: 요청을 찾을 수 없음
+          description: Match request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests/{id}/reject:
     put:
-      summary: 요청 거절 (멘토 전용)
+      operationId: rejectMatchRequest
+      tags:
+        - Match Requests
+      summary: Reject match request (mentor only)
+      description: Reject a specific match request
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: integer
+          description: Match request ID
       responses:
         "200":
-          description: 요청 거절 성공
+          description: Match request rejected successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchRequest"
         "404":
-          description: 요청을 찾을 수 없음
+          description: Match request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /match-requests/{id}:
     delete:
-      summary: 요청 취소 (멘티 전용)
+      operationId: cancelMatchRequest
+      tags:
+        - Match Requests
+      summary: Cancel match request (mentee only)
+      description: Cancel/delete a specific match request
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: integer
+          description: Match request ID
       responses:
         "200":
-          description: 요청 취소 성공
+          description: Match request cancelled successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchRequest"
         "404":
-          description: 요청을 찾을 수 없음
+          description: Match request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
-          description: 인증 실패
+          description: Unauthorized - authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
-          description: 서버 오류
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from login endpoint
+
+  schemas:
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+        - name
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          minLength: 6
+          example: "password123"
+        name:
+          type: string
+          example: "김멘토"
+        role:
+          type: string
+          enum: [mentor, mentee]
+          example: "mentor"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          example: "password123"
+
+    LoginResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    MentorProfile:
+      type: object
+      required:
+        - id
+        - email
+        - role
+        - profile
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        role:
+          type: string
+          enum: [mentor]
+          example: "mentor"
+        profile:
+          $ref: "#/components/schemas/MentorProfileDetails"
+
+    MenteeProfile:
+      type: object
+      required:
+        - id
+        - email
+        - role
+        - profile
+      properties:
+        id:
+          type: integer
+          example: 10
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        role:
+          type: string
+          enum: [mentee]
+          example: "mentee"
+        profile:
+          $ref: "#/components/schemas/MenteeProfileDetails"
+
+    MentorProfileDetails:
+      type: object
+      required:
+        - name
+        - bio
+        - imageUrl
+        - skills
+      properties:
+        name:
+          type: string
+          example: "Alice"
+        bio:
+          type: string
+          example: "Frontend mentor"
+        imageUrl:
+          type: string
+          example: "/images/mentor/1"
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "Vue"]
+
+    MenteeProfileDetails:
+      type: object
+      required:
+        - name
+        - bio
+        - imageUrl
+      properties:
+        name:
+          type: string
+          example: "Alice"
+        bio:
+          type: string
+          example: "Frontend mentee"
+        imageUrl:
+          type: string
+          example: "/images/mentee/10"
+
+    UpdateMentorProfileRequest:
+      type: object
+      required:
+        - id
+        - name
+        - role
+        - bio
+        - image
+        - skills
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Alice"
+        role:
+          type: string
+          enum: [mentor]
+          example: "mentor"
+        bio:
+          type: string
+          example: "Frontend mentor"
+        image:
+          type: string
+          format: byte
+          description: "Base64 encoded image string"
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "Vue"]
+
+    UpdateMenteeProfileRequest:
+      type: object
+      required:
+        - id
+        - name
+        - role
+        - bio
+        - image
+      properties:
+        id:
+          type: integer
+          example: 21
+        name:
+          type: string
+          example: "Alice"
+        role:
+          type: string
+          enum: [mentee]
+          example: "mentee"
+        bio:
+          type: string
+          example: "Frontend mentee"
+        image:
+          type: string
+          format: byte
+          description: "Base64 encoded image string"
+
+    MentorListItem:
+      type: object
+      required:
+        - id
+        - email
+        - role
+        - profile
+      properties:
+        id:
+          type: integer
+          example: 3
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        role:
+          type: string
+          enum: [mentor]
+          example: "mentor"
+        profile:
+          $ref: "#/components/schemas/MentorProfileDetails"
+
+    MatchRequestCreate:
+      type: object
+      required:
+        - mentorId
+        - menteeId
+        - message
+      properties:
+        mentorId:
+          type: integer
+          example: 3
+        menteeId:
+          type: integer
+          example: 4
+        message:
+          type: string
+          example: "멘토링 받고 싶어요!"
+
+    MatchRequest:
+      type: object
+      required:
+        - id
+        - mentorId
+        - menteeId
+        - message
+        - status
+      properties:
+        id:
+          type: integer
+          example: 1
+        mentorId:
+          type: integer
+          example: 3
+        menteeId:
+          type: integer
+          example: 4
+        message:
+          type: string
+          example: "멘토링 받고 싶어요!"
+        status:
+          type: string
+          enum: [pending, accepted, rejected, cancelled]
+          example: "pending"
+
+    MatchRequestOutgoing:
+      type: object
+      required:
+        - id
+        - mentorId
+        - menteeId
+        - status
+      properties:
+        id:
+          type: integer
+          example: 11
+        mentorId:
+          type: integer
+          example: 1
+        menteeId:
+          type: integer
+          example: 10
+        status:
+          type: string
+          enum: [pending, accepted, rejected, cancelled]
+          example: "pending"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Error message"
+        details:
+          type: string
+          example: "Detailed error information"
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: User Profile
+    description: User profile management endpoints
+  - name: Mentors
+    description: Mentor listing endpoints
+  - name: Match Requests
+    description: Match request management endpoints

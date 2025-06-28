@@ -12,11 +12,17 @@ router.post(
   requireRole("mentee"),
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const { mentorId, message } = req.body;
-      const userId = req.user!.id; // menteeId는 토큰에서 추출
+      const { mentorId, menteeId, message } = req.body;
+      const userId = req.user!.id; // 인증된 사용자 ID
 
-      if (!mentorId) {
-        res.status(400).json({ error: "Mentor ID is required" });
+      if (!mentorId || !menteeId) {
+        res.status(400).json({ error: "Mentor ID and Mentee ID are required" });
+        return;
+      }
+
+      // 요청한 menteeId가 인증된 사용자와 일치하는지 확인
+      if (menteeId !== userId) {
+        res.status(400).json({ error: "Mentee ID must match authenticated user" });
         return;
       }
 
@@ -33,7 +39,7 @@ router.post(
       // Check if request already exists
       const existingRequest = await get(
         "SELECT * FROM match_requests WHERE mentor_id = ? AND mentee_id = ?",
-        [mentorId, userId]
+        [mentorId, menteeId]
       );
       if (existingRequest) {
         res.status(400).json({ error: "Request already exists" });
@@ -43,7 +49,7 @@ router.post(
       // Check if mentee has pending request
       const pendingRequest = await get(
         'SELECT * FROM match_requests WHERE mentee_id = ? AND status = "pending"',
-        [userId]
+        [menteeId]
       );
       if (pendingRequest) {
         res.status(400).json({ error: "You already have a pending request" });
@@ -53,7 +59,7 @@ router.post(
       // Create match request
       const result = await run(
         'INSERT INTO match_requests (mentor_id, mentee_id, message, status) VALUES (?, ?, ?, "pending")',
-        [mentorId, userId, message || null]
+        [mentorId, menteeId, message || null]
       );
 
       const newRequest = (await get(

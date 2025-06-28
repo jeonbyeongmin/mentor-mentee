@@ -12,7 +12,8 @@ router.get(
   requireRole("mentee"),
   async (req: Request, res: Response) => {
     try {
-      const { skill, order_by } = req.query;
+      const { skill, order_by, orderBy } = req.query;
+      const sortBy = order_by || orderBy; // API 스펙에서는 order_by, OpenAPI에서는 orderBy 지원
 
       let query = 'SELECT * FROM users WHERE role = "mentor"';
       const params: any[] = [];
@@ -24,9 +25,9 @@ router.get(
       }
 
       // Order by
-      if (order_by === "name") {
+      if (sortBy === "name") {
         query += " ORDER BY name ASC";
-      } else if (order_by === "skill") {
+      } else if (sortBy === "skill") {
         query += " ORDER BY tech_stacks ASC";
       } else {
         query += " ORDER BY id ASC";
