@@ -84,16 +84,25 @@ app.use(
 );
 
 // Initialize database and start server
-initializeDatabase()
-  .then(() => {
+const startServer = async () => {
+  await initializeDatabase();
+
+  if (process.env.NODE_ENV !== "test") {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(
         `API documentation available at http://localhost:${PORT}/api-docs`
       );
     });
-  })
-  .catch((error) => {
+  }
+};
+
+// Start server only if not in test environment
+if (process.env.NODE_ENV !== "test") {
+  startServer().catch((error) => {
     console.error("Failed to initialize database:", error);
     process.exit(1);
   });
+}
+
+export { app };

@@ -2,13 +2,25 @@ import sqlite3 from "sqlite3";
 import { promisify } from "util";
 import path from "path";
 
-const dbPath = path.join(__dirname, "../database.sqlite");
+// 테스트 환경에서는 별도의 데이터베이스 사용
+const dbPath =
+  process.env.DB_PATH || path.join(__dirname, "../database.sqlite");
 const db = new sqlite3.Database(dbPath);
 
-const run = promisify(db.run.bind(db)) as (
+const run = (
   sql: string,
   params?: any[]
-) => Promise<any>;
+): Promise<{ lastID?: number; changes?: number }> => {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params || [], function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ lastID: this.lastID, changes: this.changes });
+      }
+    });
+  });
+};
 const get = promisify(db.get.bind(db)) as (
   sql: string,
   params?: any[]
@@ -22,6 +34,13 @@ export { db, run, get, all };
 
 export async function initializeDatabase() {
   try {
+    // 테스트 환경에서는 기존 테이블 삭제 후 재생성
+    if (process.env.NODE_ENV === "test") {
+      await run("DROP TABLE IF EXISTS profile_images");
+      await run("DROP TABLE IF EXISTS match_requests");
+      await run("DROP TABLE IF EXISTS users");
+    }
+
     // Users table
     await run(`
       CREATE TABLE IF NOT EXISTS users (

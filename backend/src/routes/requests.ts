@@ -12,8 +12,8 @@ router.post(
   requireRole("mentee"),
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const { mentorId, menteeId, message } = req.body;
-      const userId = req.user!.id;
+      const { mentorId, message } = req.body;
+      const userId = req.user!.id; // menteeId는 토큰에서 추출
 
       if (!mentorId) {
         res.status(400).json({ error: "Mentor ID is required" });
